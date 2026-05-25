@@ -1,0 +1,9 @@
+{
+	"name": "tic-tac-toe-engine",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "bun build ./main.ts --outfile ./main.js --target browser --format iife",
+		"dev": "bun build ./main.ts --outfile ./main.js --target browser --format iife --watch"
+	}
+}

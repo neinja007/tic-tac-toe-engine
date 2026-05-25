@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tic Tac Toe Engine</title>
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				font-family: monospace;
+				font-size: 50px;
+				display: flex;
+				justify-content: center;
+				gap: 50px;
+				place-items: center;
+				min-height: 100vh;
+			}
+
+			#board {
+				display: grid;
+				grid-template-columns: repeat(3, 80px);
+				grid-template-rows: repeat(3, 80px);
+			}
+
+			.cell {
+				box-sizing: border-box;
+				border: 1px solid #000;
+				width: 80px;
+				height: 80px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="board" aria-label="tic tac toe board">
+			<div class="cell" data-index="0"></div>
+			<div class="cell" data-index="1"></div>
+			<div class="cell" data-index="2"></div>
+			<div class="cell" data-index="3"></div>
+			<div class="cell" data-index="4"></div>
+			<div class="cell" data-index="5"></div>
+			<div class="cell" data-index="6"></div>
+			<div class="cell" data-index="7"></div>
+			<div class="cell" data-index="8"></div>
+		</div>
+		<div>
+			<span id="evalbutton">Evaluation: </span>
+			<span id="evaluation">??</span>
+			<div id="move-evals"></div>
+		</div>
+		<script src="./main.js"></script>
+	</body>
+</html>

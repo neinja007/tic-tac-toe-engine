@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "bun build ./main.ts --outfile ./main.js --target browser --format iife",
-		"dev": "bun build ./main.ts --outfile ./main.js --target browser --format iife --watch"
+		"build": "bun build ./main.ts --outdir ./public --target browser --format iife",
+		"dev": "bun build ./main.ts --outdir ./public --target browser --format iife --watch"
 	}
 }

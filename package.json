@@ -4,6 +4,10 @@
 	"type": "module",
 	"scripts": {
 		"build": "bun build ./main.ts --outdir ./public --target browser --format iife",
-		"dev": "bun build ./main.ts --outdir ./public --target browser --format iife --watch"
+		"dev": "bun build ./main.ts --outdir ./public --target browser --format iife --watch",
+		"glt": "bun run generate-lookup-table.ts"
+	},
+	"dependencies": {
+		"@types/bun": "^1.3.14"
 	}
 }

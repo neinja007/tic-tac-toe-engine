@@ -1,17 +1,11 @@
-type CellState = 'X' | 'O' | null;
-type Evaluation = '+' | 'D' | '-';
+export type CellState = 'X' | 'O' | '.';
+export type Evaluation = '+' | 'D' | '-';
 
 // +: X is winning by force, if the right line is found
 // D: The game is a draw, if the right lines are found
 // -: O is winning by force, if the right lines are found
 
-const boardElement = document.getElementById('board');
-
-const evaluationElement = document.getElementById('evaluation');
-const evalbutton = document.getElementById('evalbutton');
-const moveEvalsElement = document.getElementById('move-evals');
-
-const boardState: CellState[] = Array(9).fill(null);
+export const boardState: CellState[] = Array(9).fill('.');
 let turn: 'X' | 'O' = 'X';
 
 let evaluation: { move: number; eval: Evaluation }[] = [];
@@ -21,16 +15,17 @@ function switchTurn() {
 }
 
 function updateBoard() {
+	const boardElement = document.getElementById('board');
 	if (!boardElement) {
 		throw new Error('Missing board element');
 	}
 
 	const cells = boardElement.querySelectorAll('.cell');
 	for (let index = 0; index < cells.length; index += 1) {
-		const value = boardState[index] ?? null;
+		const value = boardState[index] ?? '.';
 		const cell = cells[index];
 		const moveEvaluation = evaluation.find((entry) => entry.move === index)?.eval ?? null;
-		const isFilled = value !== null;
+		const isFilled = value !== '.';
 		const hasEvaluation = moveEvaluation !== null;
 
 		cell.textContent = isFilled ? value : hasEvaluation ? moveEvaluation : '';
@@ -50,6 +45,8 @@ function updateBoard() {
 }
 
 function updateEvaluation() {
+	const evaluationElement = document.getElementById('evaluation');
+	const moveEvalsElement = document.getElementById('move-evals');
 	if (!evaluationElement || !moveEvalsElement) {
 		throw new Error('Missing evaluation elements');
 	}
@@ -78,7 +75,7 @@ function updateEvaluation() {
 }
 
 function checkWinner(boardState: CellState[], player: 'X' | 'O'): Evaluation | null {
-	const bswn = boardState.map((e) => e ?? 'G');
+	const bswn = boardState.map((e) => (e === '.' ? 'G' : e));
 	const across = bswn.map((p, i) => p + ((i + 1) % 3 === 0 ? '-' : '')).join('');
 	const down = bswn[0] + bswn[3] + bswn[6] + '-' + bswn[1] + bswn[4] + bswn[7] + '-' + bswn[2] + bswn[5] + bswn[8];
 	const cross = bswn[0] + bswn[4] + bswn[8] + '-' + bswn[2] + bswn[4] + bswn[6];
@@ -93,21 +90,25 @@ function checkWinner(boardState: CellState[], player: 'X' | 'O'): Evaluation | n
 				: 'D';
 }
 
-function evaluatePosition(boardState: CellState[], turn: 'X' | 'O', store: boolean = false): Evaluation {
+export function evaluatePosition(
+	boardState: CellState[],
+	turn: 'X' | 'O',
+	store: boolean = false
+): { bestEval: Evaluation; evaluations: { move: number; eval: Evaluation }[] } {
 	const evaluations: { move: number; eval: Evaluation }[] = [];
 	if (checkWinner(boardState, turn) !== null) {
-		console.log(
-			'insta-evaluated ' +
-				boardState.map((e) => e ?? '.').join('') +
-				' (turn ' +
-				turn +
-				') as ' +
-				checkWinner(boardState, turn)
-		);
-		return checkWinner(boardState, turn)!;
+		// console.log(
+		// 	'insta-evaluated ' +
+		// 		boardState.map((e) => e ?? '.').join('') +
+		// 		' (turn ' +
+		// 		turn +
+		// 		') as ' +
+		// 		checkWinner(boardState, turn)
+		// );
+		return { bestEval: checkWinner(boardState, turn)!, evaluations: [] };
 	}
 	for (let move = 0; move < 9; move++) {
-		if (boardState[move]) {
+		if (boardState[move] !== '.') {
 			continue;
 		} else {
 			evaluations.push({ move: move, eval: evaluateMove(boardState, move, turn) });
@@ -133,25 +134,26 @@ function evaluatePosition(boardState: CellState[], turn: 'X' | 'O', store: boole
 						? 'D'
 						: '+';
 
-	console.log('evaluated ' + boardState.map((e) => e ?? '.').join('') + ' (turn ' + turn + ') as ' + bestEval);
+	// console.log('evaluated ' + boardState.map((e) => e ?? '.').join('') + ' (turn ' + turn + ') as ' + bestEval);
 
-	return bestEval;
+	return { bestEval, evaluations: evaluations };
 }
 
-function evaluateMove(boardState: CellState[], move: number, turn: 'X' | 'O'): Evaluation {
+export function evaluateMove(boardState: CellState[], move: number, turn: 'X' | 'O'): Evaluation {
 	const nextBoardState = boardState.slice();
 	nextBoardState[move] = turn;
-	return evaluatePosition(nextBoardState, turn === 'X' ? 'O' : 'X');
+	return evaluatePosition(nextBoardState, turn === 'X' ? 'O' : 'X').bestEval;
 }
 
-function initializeBoard() {
+export function initializeBoard() {
+	const boardElement = document.getElementById('board');
 	if (!boardElement) {
 		throw new Error('Missing board element');
 	}
 	const cells = boardElement.querySelectorAll('.cell');
 	cells.forEach((cell, index) => {
 		cell.addEventListener('click', () => {
-			if (boardState[index] === null) {
+			if (boardState[index] === '.') {
 				boardState[index] = turn;
 				evaluation = [];
 				switchTurn();
@@ -160,12 +162,11 @@ function initializeBoard() {
 		});
 	});
 
+	const evalbutton = document.getElementById('evalbutton');
+
 	evalbutton?.addEventListener('click', () => {
 		evaluatePosition(boardState, turn, true);
 		updateEvaluation();
 		updateBoard();
 	});
 }
-
-initializeBoard();
-updateBoard();

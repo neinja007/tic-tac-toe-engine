@@ -32,6 +32,10 @@ export function initializeBoard() {
 		botTypeElement.textContent = botType;
 	}
 
+	if (botSwitchElement && botType === 'X') {
+		makeBotMove();
+	}
+
 	const boardElement = document.getElementById('board');
 	if (boardElement) {
 		const cells = boardElement.querySelectorAll('.cell');

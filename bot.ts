@@ -2,7 +2,7 @@ import { lookupEvaluation } from './evaluation';
 import { showMsg } from './html-connector';
 import { makeMove, resetBoardState } from './main';
 
-export let botType = 'O' as 'X' | 'O';
+export let botType = 'X' as 'X' | 'O';
 
 export const switchBotType = () => {
 	botType = botType === 'X' ? 'O' : 'X';

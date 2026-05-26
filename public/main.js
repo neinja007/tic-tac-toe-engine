@@ -22996,7 +22996,7 @@
   }
 
   // bot.ts
-  var botType = "O";
+  var botType = "X";
   var switchBotType = () => {
     botType = botType === "X" ? "O" : "X";
     resetBoardState();

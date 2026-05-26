@@ -4,49 +4,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Tic Tac Toe Engine</title>
-		<style>
-			html,
-			body {
-				margin: 0;
-				padding: 0;
-			}
-
-			body {
-				font-family: monospace;
-				font-size: 50px;
-				min-height: 100vh;
-			}
-
-			#content {
-				display: flex;
-				justify-content: center;
-				gap: 50px;
-				place-items: center;
-				padding-top: 20vh;
-			}
-
-			#board {
-				display: grid;
-				grid-template-columns: repeat(3, 80px);
-				grid-template-rows: repeat(3, 80px);
-			}
-
-			#nav {
-				font-size: 20px;
-				text-align: center;
-				margin-top: 30px;
-			}
-
-			.cell {
-				box-sizing: border-box;
-				border: 1px solid #000;
-				width: 80px;
-				height: 80px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-		</style>
+		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
 		<div id="content">
@@ -61,7 +19,7 @@
 				<div class="cell" data-index="7"></div>
 				<div class="cell" data-index="8"></div>
 			</div>
-			<div>
+			<div class="sidebar">
 				<div>
 					<span id="evalbutton">Evaluation: </span>
 					<span id="evaluation">??</span>
@@ -70,9 +28,12 @@
 				<div>Active Turn: <span id="active-turn">??</span></div>
 			</div>
 		</div>
-		<div id="nav">
-			<a href="play-human.html">You vs Human (Offline)</a> | <a href="play-bot.html">You vs Bot</a> |
-			<a href="analysis.html">Analysis + Evaluation</a> (You are here)
+		<div class="bottom-nav">
+			<div class="nav-links">
+				<a href="play-human.html">You vs Human (Offline)</a>
+				<a href="play-bot.html">You vs Bot</a>
+				<a href="analysis.html">Analysis + Evaluation (You are here)</a>
+			</div>
 		</div>
 		<script src="./main.js"></script>
 		<script>

@@ -31,7 +31,7 @@ export function updateBoard(boardState: CellState[], moveEvals: { move: number; 
 		throw new Error('Missing board element');
 	}
 
-	const cells = boardElement.querySelectorAll('.cell');
+	const cells = boardElement.querySelectorAll('.cell') as NodeListOf<HTMLElement>;
 	for (let index = 0; index < cells.length; index += 1) {
 		const value = boardState[index] ?? '.';
 		const cell = cells[index];

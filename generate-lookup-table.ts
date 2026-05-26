@@ -1,4 +1,5 @@
-import { CellState, evaluatePosition, Evaluation } from './main';
+import { evaluatePosition } from './evaluation';
+import { CellState, Evaluation } from './main';
 import Bun from 'bun';
 
 function getPositionValue(boardState: CellState[]) {
@@ -21,7 +22,11 @@ function getMirrors(b: CellState[]) {
 	];
 }
 
-function findIdealPosition(boardState: CellState[]) {
+export function findIdealPosition(boardState: CellState[]): {
+	position: CellState[];
+	mirror: boolean;
+	rotation: number;
+} {
 	const mirrors = getMirrors(boardState);
 	const rotations = [...getRotations(mirrors[0]), ...getRotations(mirrors[1])];
 
@@ -33,7 +38,10 @@ function findIdealPosition(boardState: CellState[]) {
 			bestPosition = position;
 		}
 	}
-	return bestPosition;
+
+	const index = rotations.indexOf(bestPosition);
+
+	return { position: bestPosition, mirror: index < 4 ? false : true, rotation: ((index + 1) % 4) - 1 };
 }
 
 let positions: CellState[][] = [];
@@ -64,7 +72,7 @@ console.log('Positions: ' + positions.length);
 
 const optimizedPositions: CellState[][] = positions.reduce(
 	(optimizedPositions: CellState[][], currentPosition: CellState[]) => {
-		const idealPosition = findIdealPosition(currentPosition);
+		const idealPosition = findIdealPosition(currentPosition).position;
 		if (optimizedPositions.some((pos) => pos.join('') === idealPosition.join(''))) {
 			return optimizedPositions;
 		} else {

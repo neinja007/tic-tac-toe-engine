@@ -3,7 +3,7 @@ import { CellState, Evaluation } from './main';
 import lookupTable from './lookup-table.json';
 import { findIdealPosition, getMirrors, getRotations } from './position-transformations';
 
-function checkWinner(boardState: CellState[], player: 'X' | 'O'): Evaluation | null {
+export function checkWinner(boardState: CellState[]): Evaluation | null {
 	const bswn = boardState.map((e) => (e === '.' ? 'G' : e));
 	const across = bswn.map((p, i) => p + ((i + 1) % 3 === 0 ? '-' : '')).join('');
 	const down = bswn[0] + bswn[3] + bswn[6] + '-' + bswn[1] + bswn[4] + bswn[7] + '-' + bswn[2] + bswn[5] + bswn[8];
@@ -24,7 +24,7 @@ export function evaluatePosition(
 	turn: 'X' | 'O'
 ): { bestEval: Evaluation; evaluations: { move: number; eval: Evaluation }[] } {
 	const evaluations: { move: number; eval: Evaluation }[] = [];
-	if (checkWinner(boardState, turn) !== null) {
+	if (checkWinner(boardState) !== null) {
 		// console.log(
 		// 	'insta-evaluated ' +
 		// 		boardState.map((e) => e ?? '.').join('') +
@@ -33,7 +33,7 @@ export function evaluatePosition(
 		// 		') as ' +
 		// 		checkWinner(boardState, turn)
 		// );
-		return { bestEval: checkWinner(boardState, turn)!, evaluations: [] };
+		return { bestEval: checkWinner(boardState)!, evaluations: [] };
 	}
 	for (let move = 0; move < 9; move++) {
 		if (boardState[move] !== '.') {

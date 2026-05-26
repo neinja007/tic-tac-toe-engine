@@ -1,5 +1,5 @@
-import { lookupEvaluation } from './evaluation';
-import { initializeBoard, updateBoard, updateEvaluation } from './html-connector';
+import { checkWinner, lookupEvaluation } from './evaluation';
+import { initializeBoard, showMsg, updateBoard, updateEvaluation } from './html-connector';
 
 export type CellState = 'X' | 'O' | '.';
 export type Evaluation = 'X' | 'O' | 'D';
@@ -18,19 +18,33 @@ function switchTurn() {
 	turn = turn === 'X' ? 'O' : 'X';
 }
 
-export function makeMove(move: number, player?: 'X' | 'O') {
+export function resetBoardState() {
+	for (let i = 0; i < boardState.length; i++) {
+		boardState[i] = '.';
+	}
+}
+
+export function makeMove(move: number, player?: 'X' | 'O', updateEval = true) {
+	if (checkWinner(boardState) !== null) {
+		showMsg('end');
+		return;
+	}
 	if (boardState[move] === '.') {
 		boardState[move] = player ?? turn;
 		moveEvals = [];
 		switchTurn();
 	}
 
-	const { bestEval, evaluations } = lookupEvaluation(boardState, turn)!;
-	boardEval = bestEval;
-	moveEvals = evaluations;
-	updateEvaluation(boardEval);
-
+	if (updateEval) {
+		const { bestEval, evaluations } = lookupEvaluation(boardState, turn)!;
+		boardEval = bestEval;
+		moveEvals = evaluations;
+		updateEvaluation(boardEval);
+	}
 	updateBoard(boardState, moveEvals);
+	if (checkWinner(boardState) !== null) {
+		showMsg('end');
+	}
 }
 
 declare global {

@@ -62,17 +62,23 @@
 				<div class="cell" data-index="8"></div>
 			</div>
 			<div>
-				<span id="evalbutton">Evaluation: </span>
-				<span id="evaluation">??</span>
-				<div id="move-evals"></div>
+				<div id="nav" style="display: flex">
+					Bot is&nbsp;
+					<div id="bot-type">O</div>
+					.&nbsp;
+					<div id="bot-switch-type"><u>Switch</u></div>
+				</div>
+				<div id="lose-msg" style="display: none">You will lose.</div>
+				<div id="end-msg" style="display: none">Game has ended.</div>
 			</div>
 		</div>
 		<div id="nav">
 			<a href="play-human.html">You vs Human (Offline)</a> | <a href="play-bot.html">You vs Bot</a> (You are here) |
 			<a href="analysis.html">Analysis + Evaluation</a>
 		</div>
-		<script src="./public/main.js">
-			initializeBoard()
+		<script src="./public/main.js"></script>
+		<script>
+			initializeBoard();
 		</script>
 	</body>
 </html>

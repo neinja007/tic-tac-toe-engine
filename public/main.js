@@ -30,6 +30,7 @@
   // main.ts
   var exports_main = {};
   __export(exports_main, {
+    resetBoardState: () => resetBoardState,
     makeMove: () => makeMove,
     boardState: () => boardState
   });
@@ -22968,6 +22969,14 @@
   }
 
   // evaluation.ts
+  function checkWinner(boardState) {
+    const bswn = boardState.map((e) => e === "." ? "G" : e);
+    const across = bswn.map((p, i) => p + ((i + 1) % 3 === 0 ? "-" : "")).join("");
+    const down = bswn[0] + bswn[3] + bswn[6] + "-" + bswn[1] + bswn[4] + bswn[7] + "-" + bswn[2] + bswn[5] + bswn[8];
+    const cross = bswn[0] + bswn[4] + bswn[8] + "-" + bswn[2] + bswn[4] + bswn[6];
+    const amalgamation = across + "-" + down + "-" + cross;
+    return amalgamation.includes("XXX") ? "X" : amalgamation.includes("OOO") ? "O" : amalgamation.includes("G") ? null : "D";
+  }
   function lookupEvaluation(boardState, turn) {
     const { position, mirror, rotation } = findIdealPosition(boardState);
     const lookupKey = turn + "-" + position.join("");
@@ -22986,16 +22995,63 @@
     };
   }
 
+  // bot.ts
+  var botType = "O";
+  var switchBotType = () => {
+    botType = botType === "X" ? "O" : "X";
+    resetBoardState();
+  };
+  function makeBotMove() {
+    if (window.boardState) {
+      const { bestEval, evaluations } = lookupEvaluation(window.boardState, botType);
+      const bestMoves = evaluations.filter((e) => e.eval === bestEval);
+      if (bestEval === botType) {
+        showMsg("lose");
+      }
+      if (bestMoves.length > 0) {
+        const randomBestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        makeMove(randomBestMove.move, botType, false);
+      }
+    }
+  }
+
   // html-connector.ts
+  function showMsg(msg) {
+    const element = document.getElementById(msg + "-msg");
+    if (element) {
+      element.style.display = "block";
+    }
+  }
   function initializeBoard() {
+    const botSwitchElement = document.getElementById("bot-switch-type");
+    if (botSwitchElement) {
+      botSwitchElement.addEventListener("click", () => {
+        switchBotType();
+        const botTypeElement2 = document.getElementById("bot-type");
+        if (botTypeElement2) {
+          botTypeElement2.textContent = botType;
+        }
+        if (botType === "X") {
+          makeBotMove();
+        }
+      });
+    }
+    const botTypeElement = document.getElementById("bot-type");
+    if (botTypeElement) {
+      botTypeElement.textContent = botType;
+    }
     const boardElement = document.getElementById("board");
     if (boardElement) {
       const cells = boardElement.querySelectorAll(".cell");
       cells.forEach((cell, index) => {
-        cell.addEventListener("click", () => makeMove(index));
+        cell.addEventListener("click", () => {
+          makeMove(index, undefined, !botSwitchElement);
+          if (botSwitchElement) {
+            makeBotMove();
+          }
+        });
       });
     }
-    const evalbutton = document.getElementById("evalbutton");
   }
   function updateBoard(boardState, moveEvals) {
     const boardElement = document.getElementById("board");
@@ -23030,17 +23086,31 @@
   function switchTurn() {
     turn = turn === "X" ? "O" : "X";
   }
-  function makeMove(move, player) {
+  function resetBoardState() {
+    for (let i = 0;i < boardState.length; i++) {
+      boardState[i] = ".";
+    }
+  }
+  function makeMove(move, player, updateEval = true) {
+    if (checkWinner(boardState) !== null) {
+      showMsg("end");
+      return;
+    }
     if (boardState[move] === ".") {
       boardState[move] = player ?? turn;
       moveEvals = [];
       switchTurn();
     }
-    const { bestEval, evaluations } = lookupEvaluation(boardState, turn);
-    boardEval = bestEval;
-    moveEvals = evaluations;
-    updateEvaluation(boardEval);
+    if (updateEval) {
+      const { bestEval, evaluations } = lookupEvaluation(boardState, turn);
+      boardEval = bestEval;
+      moveEvals = evaluations;
+      updateEvaluation(boardEval);
+    }
     updateBoard(boardState, moveEvals);
+    if (checkWinner(boardState) !== null) {
+      showMsg("end");
+    }
   }
   if (typeof window !== "undefined") {
     window.initializeBoard = initializeBoard;

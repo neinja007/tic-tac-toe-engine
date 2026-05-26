@@ -1,17 +1,51 @@
+import { botType, makeBotMove, switchBotType } from './bot';
 import { CellState, Evaluation, makeMove } from './main';
 
 export const initializeHtmlElements = () => {};
 
+export function showMsg(msg: 'lose' | 'end') {
+	const element = document.getElementById(msg + '-msg');
+	if (element) {
+		element.style.display = 'block';
+	}
+}
+
 export function initializeBoard() {
+	const botSwitchElement = document.getElementById('bot-switch-type');
+	if (botSwitchElement) {
+		botSwitchElement.addEventListener('click', () => {
+			switchBotType();
+
+			const botTypeElement = document.getElementById('bot-type');
+			if (botTypeElement) {
+				botTypeElement.textContent = botType;
+			}
+
+			if (botType === 'X') {
+				makeBotMove();
+			}
+		});
+	}
+
+	const botTypeElement = document.getElementById('bot-type');
+	if (botTypeElement) {
+		botTypeElement.textContent = botType;
+	}
+
 	const boardElement = document.getElementById('board');
 	if (boardElement) {
 		const cells = boardElement.querySelectorAll('.cell');
 		cells.forEach((cell, index) => {
-			cell.addEventListener('click', () => makeMove(index));
+			cell.addEventListener('click', () => {
+				makeMove(index, undefined, !botSwitchElement);
+				if (botSwitchElement) {
+					makeBotMove();
+				}
+			});
 		});
 	}
 
-	const evalbutton = document.getElementById('evalbutton');
+	// const evalbutton = document.getElementById('evalbutton');
 
 	// if (evalbutton) {
 

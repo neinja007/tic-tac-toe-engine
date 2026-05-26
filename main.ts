@@ -1,4 +1,4 @@
-import { evaluatePosition } from './evaluation';
+import { lookupEvaluation } from './evaluation';
 import { initializeBoard, updateBoard, updateEvaluation } from './html-connector';
 
 export type CellState = 'X' | 'O' | '.';
@@ -25,7 +25,7 @@ export function makeMove(move: number, player?: 'X' | 'O') {
 		switchTurn();
 	}
 
-	const { bestEval, evaluations } = evaluatePosition(boardState, turn);
+	const { bestEval, evaluations } = lookupEvaluation(boardState, turn)!;
 	boardEval = bestEval;
 	moveEvals = evaluations;
 	updateEvaluation(boardEval);

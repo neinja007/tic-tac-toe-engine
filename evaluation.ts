@@ -83,7 +83,7 @@ export function lookupEvaluation(
 	}
 
 	return {
-		bestEval: lookupResult.evaluation,
+		bestEval: lookupResult.evaluation as Evaluation,
 		evaluations: lookupResult.moveEvaluations.split('').map((evalChar, index) => ({
 			move: index,
 			eval: evalChar as Evaluation

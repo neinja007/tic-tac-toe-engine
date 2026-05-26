@@ -23093,6 +23093,19 @@
     for (let i = 0;i < boardState.length; i++) {
       boardState[i] = ".";
     }
+    turn = "X";
+    moveEvals = [];
+    boardEval = null;
+    updateBoard(boardState, moveEvals);
+    updateEvaluation(boardEval);
+    const loseMessage = document.getElementById("lose-msg");
+    if (loseMessage) {
+      loseMessage.style.display = "none";
+    }
+    const endMessage = document.getElementById("end-msg");
+    if (endMessage) {
+      endMessage.style.display = "none";
+    }
   }
   function makeMove(move, player) {
     if (checkWinner(boardState) !== null) {

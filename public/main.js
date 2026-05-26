@@ -23010,7 +23010,7 @@
       }
       if (bestMoves.length > 0) {
         const randomBestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
-        makeMove(randomBestMove.move, botType, false);
+        makeMove(randomBestMove.move, botType);
       }
     }
   }
@@ -23045,7 +23045,7 @@
       const cells = boardElement.querySelectorAll(".cell");
       cells.forEach((cell, index) => {
         cell.addEventListener("click", () => {
-          makeMove(index, undefined, !botSwitchElement);
+          makeMove(index);
           if (botSwitchElement) {
             makeBotMove();
           }
@@ -23073,7 +23073,7 @@
   function updateEvaluation(boardEval) {
     const evaluationElement = document.getElementById("evaluation");
     if (!evaluationElement) {
-      throw new Error("Missing evaluation elements");
+      return;
     }
     evaluationElement.innerHTML = boardEval ?? "??";
   }
@@ -23091,7 +23091,7 @@
       boardState[i] = ".";
     }
   }
-  function makeMove(move, player, updateEval = true) {
+  function makeMove(move, player) {
     if (checkWinner(boardState) !== null) {
       showMsg("end");
       return;
@@ -23101,7 +23101,7 @@
       moveEvals = [];
       switchTurn();
     }
-    if (updateEval) {
+    if (document.getElementById("evaluation")) {
       const { bestEval, evaluations } = lookupEvaluation(boardState, turn);
       boardEval = bestEval;
       moveEvals = evaluations;

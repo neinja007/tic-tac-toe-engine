@@ -24,7 +24,7 @@ export function resetBoardState() {
 	}
 }
 
-export function makeMove(move: number, player?: 'X' | 'O', updateEval = true) {
+export function makeMove(move: number, player?: 'X' | 'O') {
 	if (checkWinner(boardState) !== null) {
 		showMsg('end');
 		return;
@@ -35,7 +35,7 @@ export function makeMove(move: number, player?: 'X' | 'O', updateEval = true) {
 		switchTurn();
 	}
 
-	if (updateEval) {
+	if (document.getElementById('evaluation')) {
 		const { bestEval, evaluations } = lookupEvaluation(boardState, turn)!;
 		boardEval = bestEval;
 		moveEvals = evaluations;

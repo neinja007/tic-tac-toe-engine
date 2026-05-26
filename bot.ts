@@ -18,7 +18,7 @@ export function makeBotMove() {
 		}
 		if (bestMoves.length > 0) {
 			const randomBestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
-			makeMove(randomBestMove.move, botType, false);
+			makeMove(randomBestMove.move, botType);
 		}
 	}
 }

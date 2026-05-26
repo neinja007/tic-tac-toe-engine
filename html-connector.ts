@@ -37,7 +37,7 @@ export function initializeBoard() {
 		const cells = boardElement.querySelectorAll('.cell');
 		cells.forEach((cell, index) => {
 			cell.addEventListener('click', () => {
-				makeMove(index, undefined, !botSwitchElement);
+				makeMove(index);
 				if (botSwitchElement) {
 					makeBotMove();
 				}
@@ -94,7 +94,7 @@ export function updateEvaluation(boardEval: Evaluation | null) {
 	// const moveEvalsElement = document.getElementById('move-evals');
 	// if (!evaluationElement || !moveEvalsElement) {
 	if (!evaluationElement) {
-		throw new Error('Missing evaluation elements');
+		return;
 	}
 
 	evaluationElement.innerHTML = boardEval ?? '??';

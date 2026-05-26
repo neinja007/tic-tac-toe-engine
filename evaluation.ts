@@ -1,7 +1,7 @@
-import { findIdealPosition } from './generate-lookup-table';
 import { CellState, Evaluation } from './main';
 
 import lookupTable from './lookup-table.json';
+import { findIdealPosition, getMirrors, getRotations } from './position-transformations';
 
 function checkWinner(boardState: CellState[], player: 'X' | 'O'): Evaluation | null {
 	const bswn = boardState.map((e) => (e === '.' ? 'G' : e));
@@ -78,15 +78,20 @@ export function lookupEvaluation(
 	const lookupKey = turn + '-' + position.join('');
 	const lookupResult = lookupTable[lookupKey as keyof typeof lookupTable];
 
+	const newResult = getMirrors(position)[mirror ? 1 : 0];
+	const rotatedResult = getRotations(newResult)[3 - rotation];
+
 	if (!lookupResult) {
 		throw new Error('Position not found in lookup table: ' + lookupKey);
 	}
 
 	return {
 		bestEval: lookupResult.evaluation as Evaluation,
-		evaluations: lookupResult.moveEvaluations.split('').map((evalChar, index) => ({
-			move: index,
-			eval: evalChar as Evaluation
-		}))
+		evaluations: rotatedResult
+			.map((evalChar, index) => ({
+				move: index,
+				eval: evalChar as Evaluation | '.'
+			}))
+			.filter((e) => e.eval !== '.') as { move: number; eval: Evaluation }[]
 	};
 }

@@ -78,8 +78,8 @@ export function lookupEvaluation(
 	const lookupKey = turn + '-' + position.join('');
 	const lookupResult = lookupTable[lookupKey as keyof typeof lookupTable];
 
-	const newResult = getMirrors(position)[mirror ? 1 : 0];
-	const rotatedResult = getRotations(newResult)[3 - rotation];
+	const rotatedResult = getRotations(lookupResult.moveEvaluations.split('') as CellState[])[(4 - rotation) % 4];
+	const mirroredResult = getMirrors(rotatedResult)[mirror ? 1 : 0];
 
 	if (!lookupResult) {
 		throw new Error('Position not found in lookup table: ' + lookupKey);
@@ -87,7 +87,7 @@ export function lookupEvaluation(
 
 	return {
 		bestEval: lookupResult.evaluation as Evaluation,
-		evaluations: rotatedResult
+		evaluations: mirroredResult
 			.map((evalChar, index) => ({
 				move: index,
 				eval: evalChar as Evaluation | '.'
